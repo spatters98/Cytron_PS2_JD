@@ -5,13 +5,15 @@ Original written by:
 Modified:
   29/06/15  Idris, Cytron Technologies    - Point to IDE SoftwareSerial
                                           - Restructure the code style to follow standard Arduino library
+
+Modified:
+  29/01/2025 S. Patterson
 */
 
 #ifndef Cytron_PS2Shield_h
 #define Cytron_PS2Shield_h
 
 #include "Arduino.h"
-#include <SoftwareSerial.h>
 
 // Arduino Leonardo
 #if defined (__AVR_ATmega32U4__)
