@@ -43,7 +43,6 @@ enum {
   PS2_SQUARE,
   // Analog button
   PS2_JOYSTICK_LEFT_X_AXIS,
-  PS2_JOYSTICK_LEFT_Y_AXIS,
   PS2_JOYSTICK_RIGHT_X_AXIS,
   PS2_JOYSTICK_RIGHT_Y_AXIS,
   PS2_JOYSTICK_LEFT_UP,
@@ -83,7 +82,11 @@ class Cytron_PS2Shield
 
   protected:
     boolean hardwareSerial;
+#ifdef PostNeoSWSerial_h
+    PostNeoSWSerial *PS2Serial;
+#else
     SoftwareSerial *PS2Serial;
+#endif
     void write(uint8_t data);
     uint8_t read(void);
 };
