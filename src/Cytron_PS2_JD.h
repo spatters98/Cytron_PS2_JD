@@ -9,6 +9,7 @@ Modified:
 Modified:
   29/01/2025 S. Patterson
 */
+#include <PostNeoSWSerial.h>
 
 #ifndef Cytron_PS2Shield_h
 #define Cytron_PS2Shield_h
