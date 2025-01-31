@@ -1,0 +1,82 @@
+
+//#include <PostNeoSWSerial.h>     // required for Serial2 link to Cytron shield
+#include <Cytron_PS2Shield.h>   // Cytron PS2 library modified to remove SoftwareSerial
+#include <ArduinoSTL.h>           // C++ STL library (or part of it)
+//#include <vector>                // std template library for vector
+
+struct PS2key {
+  uint8_t name;   // the name of key on controller
+  int* variable;  // variable to carry result
+  bool changed;   // flag for new value
+};
+
+class PS2Link {
+  public:
+    PS2Link(int rxpin=2,int txpin=3) {
+      ps2._rxpin=rxpin;
+      ps2._txpin=txpin;
+      ps2.begin(9600);                          // attach shield to serial link
+    }
+
+    bool query(int button, int &value) {
+      if (!checkupdatetime()) return false;
+      value = ps2.readButton(button);
+      return true;
+    }
+
+    bool query(PS2key key) {
+      if (!checkupdatetime()) return false;
+      uint8_t keyval = ps2.readButton(key.name);
+      if(keyval != *key.variable) key.changed = true;
+      else key.changed = false;
+      *key.variable = keyval;
+      return true;
+    }
+
+    bool query() {
+      if (!checkupdatetime()) return false;
+      for(auto& key : keylist) {
+        uint8_t keyval = ps2.readButton(key.name);
+        if(keyval != *key.variable) key.changed = true;
+        else key.changed = false;
+        *key.variable = keyval;
+  //      Serial.print(key.name); Serial.print(" : "); Serial.print(keyval); Serial.print("  "); Serial.println(key.changed);
+      }
+      return true;
+    }
+
+    void pushkey(PS2key key) {  // add a key to the query list
+      keylist.push_back(key);
+    }
+    void pushkey(int name, int &variable) {
+      PS2key key;
+      key.name = name;
+      key.variable = &variable;
+      key.changed = false;
+      this -> pushkey(key);
+    }
+
+    void setUpdateTime(int mS) {
+      updatems = mS;
+    }
+
+    bool updateAll() {
+      return ps2.readAllButton();
+    }
+
+    uint8_t passthrough(int name) { return ps2.readButton(name);}
+
+  private:
+    Cytron_PS2Shield ps2;
+    unsigned long int tlast;  // update timer
+    int updatems=10;          // wait time for updates in mS
+    std::vector<PS2key> keylist;   // vector to hold the list of keys to query
+
+    bool checkupdatetime() {    // return true if it is a valid update time
+      if((millis() - tlast) < updatems) return false;
+      else {
+        tlast += updatems;  // set the timer for next interval
+        return true;
+      }
+    }
+};

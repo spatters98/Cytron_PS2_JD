@@ -7,9 +7,10 @@ Modified:
                                           - Restructure the code style to follow standard Arduino library
 
 Modified:
-  29/01/2025 S. Patterson
+  30/01/2025 S. Patterson
 */
-#include <PostNeoSWSerial.h>
+#include <PostNeoSWSerial.h>      // software serial for connecting to Cytron_PS2Shield
+#include <ArduinoSTL.h>           // standard C++ template library support for vector
 
 #ifndef Cytron_PS2Shield_h
 #define Cytron_PS2Shield_h
@@ -24,9 +25,12 @@ Modified:
 #endif
 
 // Define PS2 button to number
+//   The resulting enum integer value corresponds to the
+//   command code sent to the Cytron board to retrieve the state
+//   DO NOT CHANGE THE ORDER of the enums
 enum {
   // Digital button
-  PS2_SELECT,
+  PS2_SELECT = 0,
   PS2_JOYSTICK_LEFT,
   PS2_JOYSTICK_RIGHT,
   PS2_START,
@@ -63,6 +67,12 @@ enum {
   PS2_BUTTON_JOYSTICK
 };
 
+struct PS2key {
+  uint8_t name;   // the name of key on controller
+  int value;      // variable to carry result
+  bool changed;   // flag for new value
+};
+
 class Cytron_PS2Shield
 {
   public:
@@ -80,7 +90,8 @@ class Cytron_PS2Shield
     boolean readAllButton();
     void vibrate(uint8_t motor, uint8_t value);
     void reset(uint8_t reset);
-
+    // ---- begin PS2Link functions ----
+    bool query(uint8_t key, int &value);    
   protected:
     boolean hardwareSerial;
 #ifdef PostNeoSWSerial_h
@@ -90,6 +101,12 @@ class Cytron_PS2Shield
 #endif
     void write(uint8_t data);
     uint8_t read(void);
+    
+  private:    // added for PS2Link functions
+    unsigned long int tlast;      // update timer
+    int updatems=10;              // wait time for updates in mS
+    std::vector<PS2key> keylist;  // vector to hold the list of keys to query
+    bool checkupdatetime();       // return true if it is a valid update time
 };
 
 #endif
