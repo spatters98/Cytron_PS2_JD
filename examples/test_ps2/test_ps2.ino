@@ -1,40 +1,64 @@
-// placeholder example
+/****************************************
+* Test program illustrating different   *
+* methods of accessing PS2 controller   *
+* keys                                  *
+****************************************/
 #include <Cytron_PS2_JD.h>
 
-Cytron_PS2Shield ps2(2,3);  // controller object using pins 2 and 3
+// create controller object with serial connection on pins 2&3
+Cytron_PS2Shield ps2(2,3); 
+#define CYCLETIME 2000  // mS between loop iterations
+
+PS2key triangle(PS2_TRIANGLE);  // only used for key-based
+PS2key squarex(PS2_SQUARE);      // query and fetch
 
 void setup() {
  Serial.begin(9600);    // serial interface for console
  while(!Serial) {};     // wait for serial to start
- Serial.println("Started serial");
- ps2.begin(9600);
+ Serial.println("Started monitor serial");
+ ps2.begin(9600);       // start up shield
  Serial.println("Attached controller");
- delay(5000);
- Serial.println("Still here");
- 
+  ps2.pushkey(triangle);
+  ps2.pushkey(squarex);
+
+ delay(1000);
 }
 
 void loop() {
-  for(int i=0; i < 5; i++) {
+    // legacy access using readButton()
     Serial.print("read cross:  ");
-    String msg = "";
-    msg.concat(millis());
-    msg.concat("\t");
-    msg.concat(ps2.readButton(PS2_CROSS));
-    Serial.println(msg);
-
-    delay(200);
-
+    Serial.println(ps2.readButton(PS2_CROSS));
+    
+    // direct query to shield using keyname
     int circle;
     ps2.query(PS2_CIRCLE, circle);
     Serial.print("Query circle: ");
     Serial.println(circle);
 
-    if(ps2.readButton(PS2_SELECT) == 0) {
-      Serial.println("bye bye");
-      exit(0);
-    }
-    delay(1000);
-  }
+    // direct query to shield using PS2key object
+    ps2.query(triangle);  
+    Serial.print("Query triangle: ");
+    Serial.print(triangle.value);
+    Serial.print(" , ");
+    Serial.println(triangle.changed);
+
+    // make a query list
+    // ps2.clearkeys();
   
+    ps2.query();
+    Serial.print("\nQuery triangle: ");
+    Serial.print(triangle.value);
+    Serial.print(" , ");
+    Serial.println(triangle.changed);
+    Serial.print("Query square: ");
+    Serial.print(squarex.value);
+    Serial.print(" , ");
+    Serial.println(squarex.changed);
+
+    // break out of loop
+    if(ps2.readButton(PS2_SELECT) == 0) {
+      exit(0); 
+    }
+    Serial.println("**********************\n");
+    delay(CYCLETIME);
 }

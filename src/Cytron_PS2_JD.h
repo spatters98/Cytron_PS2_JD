@@ -67,10 +67,14 @@ enum {
   PS2_BUTTON_JOYSTICK
 };
 
-struct PS2key {
-  uint8_t name;   // the name of key on controller
-  int value;      // variable to carry result
-  bool changed;   // flag for new value
+class PS2key {
+  public:
+    PS2key(uint8_t keyname);
+    uint8_t name();
+    bool changed;     // flag for new value
+    int value;      // variable to carry result     
+  protected:
+    uint8_t kname;   // the name of key on controller
 };
 
 class Cytron_PS2Shield
@@ -91,7 +95,12 @@ class Cytron_PS2Shield
     void vibrate(uint8_t motor, uint8_t value);
     void reset(uint8_t reset);
     // ---- begin PS2Link functions ----
-    bool query(uint8_t key, int &value);    
+    void setUpdateTime(int mS);   // change the minimum interval between queries
+    bool query(uint8_t key, int &value); 
+    bool query(PS2key &key);
+    bool query();
+    void pushkey(PS2key &key);  // add a key ptr to the query list
+    void clearkeys();           // clear the query list
   protected:
     boolean hardwareSerial;
 #ifdef PostNeoSWSerial_h
@@ -105,7 +114,7 @@ class Cytron_PS2Shield
   private:    // added for PS2Link functions
     unsigned long int tlast;      // update timer
     int updatems=10;              // wait time for updates in mS
-    std::vector<PS2key> keylist;  // vector to hold the list of keys to query
+    std::vector<PS2key*> keylist;  // vector to hold the list of keys to query
     bool checkupdatetime();       // return true if it is a valid update time
 };
 
