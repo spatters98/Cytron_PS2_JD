@@ -125,7 +125,7 @@ boolean Cytron_PS2Shield::readAllButton()
 	
 	if(hardwareSerial)
 	{		
-		nbyte = Serial.readBytes(ps_data, 6);
+		nbyte = Serial.readBytes(ps_data.byte, 6);
 		
 		if(nbyte == 6) return(true); 
 		else return (false);
@@ -140,9 +140,11 @@ boolean Cytron_PS2Shield::readAllButton()
 			if(waitcount > 50000) {				
 				return (false); 
 			}
-		}		
+		}
+		
+		
 		for(int i = 0; i < 6; i++) {
-			ps_data[i] = PS2Serial->read();
+			ps_data.byte[i] = read();
 		}
 		return(true);	
 	}

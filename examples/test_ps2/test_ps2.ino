@@ -7,58 +7,89 @@
 
 // create controller object with serial connection on pins 2&3
 Cytron_PS2Shield ps2(2,3); 
-#define CYCLETIME 2000  // mS between loop iterations
+#define CYCLETIME 4000  // mS between loop iterations
 
-PS2key triangle(PS2_TRIANGLE);  // only used for key-based
-PS2key squarex(PS2_SQUARE);      // query and fetch
+// convenience function for print to the monitor
+printDiagnostic(String str0, int value,String str1=""){
+  Serial.print(str0);
+  Serial.print(value);
+  Serial.println(str1);
+  return;
+}
+
+// create some key definitions for testing fetch and query
+// These need to be global so they can be use both loop() and setup()
+// This permits the variables in the code to have descriptive names and
+// allows easy change of the key bindings
+PS2key gripOn(PS2_TRIANGLE);        
+PS2key gripOff(PS2_SQUARE);           
+PS2key motorSpeed(PS2_JOYSTICK_RIGHT_Y_AXIS);
 
 void setup() {
- Serial.begin(9600);    // serial interface for console
- while(!Serial) {};     // wait for serial to start
- Serial.println("Started monitor serial");
- ps2.begin(9600);       // start up shield
- Serial.println("Attached controller");
-  ps2.pushkey(triangle);
-  ps2.pushkey(squarex);
+  Serial.begin(9600);    // serial interface for console
+  while(!Serial) {};     // wait for serial to start
+  Serial.println("Started monitor serial");
+  ps2.begin(9600);       // start up shield
+  Serial.println("Attached controller");
 
- delay(1000);
+ // create a key list for testing query(PS2key &keyname)
+  ps2.pushkey(gripOn);
+  ps2.pushkey(gripOff);
+  ps2.pushkey(motorSpeed);
+
+  delay(1000);  // short pause before loop starts - not necessary
 }
 
 void loop() {
-    // legacy access using readButton()
-    Serial.print("read cross:  ");
-    Serial.println(ps2.readButton(PS2_CROSS));
+    unsigned long int tstart, period;   // variables used for timing measurements
+    Serial.println("---------------------------");  // mark start of iteration
+
+        // legacy access using readButton()
+    printDiagnostic("value of cross button", ps2.readButton(PS2_CROSS));
     
     // direct query to shield using keyname
     int circle;
     ps2.query(PS2_CIRCLE, circle);
-    Serial.print("Query circle: ");
-    Serial.println(circle);
-
+    printDiagnostic("Query circle: ", circle, "\n");
+    
     // direct query to shield using PS2key object
-    ps2.query(triangle);  
-    Serial.print("Query triangle: ");
-    Serial.print(triangle.value);
-    Serial.print(" , ");
-    Serial.println(triangle.changed);
+    ps2.query(gripOn);  
+    printDiagnostic("Query gripOn (TRIANGLE): ", gripOn.value);
+    printDiagnostic("Is this a new value> ", gripOn.changed, "\n");
 
-    // make a query list
-    // ps2.clearkeys();
-  
-    ps2.query();
-    Serial.print("\nQuery triangle: ");
-    Serial.print(triangle.value);
-    Serial.print(" , ");
-    Serial.println(triangle.changed);
-    Serial.print("Query square: ");
-    Serial.print(squarex.value);
-    Serial.print(" , ");
-    Serial.println(squarex.changed);
+    // use the query list created in setup()
+    tstart = millis();
+    ps2.query();    // this queries all key list entries successively
+    period = millis()-tstart;
+    printDiagnostic("query time = ", period, " mS");
+    printDiagnostic("query gripOn: ", gripOn.value);
+    printDiagnostic("gripOn changed? ", gripOn.changed);
+    printDiagnostic("query gripOff:", gripOff.value);
+    printDiagnostic("gripOff changed? ", gripOff.changed);
+    printDiagnostic("query motorSpeed: ", motorSpeed.value);
+    printDiagnostic("motorspeed changed? ", motorSpeed.changed, "\n");
+        
+    // query all values and fetch results
+    tstart = millis();
+    ps2.queryAll();
+    period = millis()-tstart;
+    printDiagnostic("query time = ", period, " mS");
+    
+    // fetch directly with key name 
+    int temp;
+    ps2.fetch(gripOn);
+    printDiagnostic("fetch gripOn: ", gripOn.value);
+    printDiagnostic("gripOn changed? ", gripOn.changed);
+    printDiagnostic("fetch gripOff:", gripOff.value);
+    printDiagnostic("gripOff changed? ", gripOff.changed);
+    printDiagnostic("fetch motorSpeed: ", motorSpeed.value);
+    printDiagnostic("motorspeed changed? ", motorSpeed.changed, "\n");
 
-    // break out of loop
+    Serial.println("**************************");  // done with this iteration of loop
+
+   // break out of loop if desired
     if(ps2.readButton(PS2_SELECT) == 0) {
       exit(0); 
     }
-    Serial.println("**********************\n");
-    delay(CYCLETIME);
+    delay(CYCLETIME);   // make sure the loop runs slow enough to see whats happening
 }

@@ -43,6 +43,51 @@ bool Cytron_PS2Shield::query() {
     return true;
 }
 
+bool Cytron_PS2Shield::queryAll()   // get packet from shield
+{
+    if (!checkupdatetime()) return false;
+    else {
+        readAllButton();
+        // first get the digital keys
+        const uint16_t mask = 1;
+        uint16_t tempdata = ps_data.switches[0];
+        for (int i = 0 ; i<16 ; i++) {
+            switchValues[keyBitMap[i]] = tempdata & mask;
+            tempdata >>= 1;
+        }
+        // then get the joystic values
+        switchValues[PS2_JOYSTICK_LEFT_X_AXIS] = ps_data.byte[2];
+        switchValues[PS2_JOYSTICK_LEFT_Y_AXIS] = ps_data.byte[3];
+        switchValues[PS2_JOYSTICK_RIGHT_X_AXIS] = ps_data.byte[4];
+        switchValues[PS2_JOYSTICK_RIGHT_Y_AXIS] = ps_data.byte[5];
+        return true;
+    }
+}
+
+void Cytron_PS2Shield::fetch(uint8_t key, int& value)
+{
+    value = switchValues[key];
+    return ;
+}
+
+void Cytron_PS2Shield::fetch(PS2key &key)
+{
+    int keyval = switchValues[key.name()];
+Serial.print("looking for ");Serial.println(key.name());
+    key.changed = keyval != key.value;
+    key.value = keyval;
+    return;
+}
+
+void Cytron_PS2Shield::fetch()
+{
+    for(auto &key : keylist) {
+        fetch(key);
+    }
+    return;
+}
+
+
 void Cytron_PS2Shield::pushkey(PS2key &key) {  // add a key to the query list
       keylist.push_back(&key);
       Serial.print("Pushkey "); Serial.println(key.name());
