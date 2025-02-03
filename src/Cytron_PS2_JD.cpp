@@ -5,9 +5,13 @@ Original written by:
 Modified:
   29/06/15  Idris, Cytron Technologies    - Point to IDE SoftwareSerial
                                           - Restructure the code style to follow standard Arduino library
+                                          
+Modified:
+  3/02/2025	S. Patterson, UNCC		- correct type error
+									- add code for PostNeoSWSerial library
+									- remove includes not used
 */
 
-#include "HardwareSerial.h"
 #include "Cytron_PS2_JD.h"
 
 Cytron_PS2Shield::Cytron_PS2Shield(uint8_t rxpin, uint8_t txpin)
@@ -116,7 +120,7 @@ uint8_t Cytron_PS2Shield::readButton(uint8_t key)
 	return read();
 }
 
-boolean Cytron_PS2Shield::readAllButton()
+bool Cytron_PS2Shield::readAllButton()
 {
 	uint8_t nbyte; 
 	uint32_t waitcount;

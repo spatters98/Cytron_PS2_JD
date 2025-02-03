@@ -14,7 +14,7 @@ Modified:
 
 #include <PostNeoSWSerial.h>      // software serial for connecting to Cytron_PS2Shield
 #include <ArduinoSTL.h>           // standard C++ template library support for vector
-#include "Arduino.h"
+#include <stdint.h>     // not needed for Arduino IDE, but surpresses errors in KDevelop
 
 // Define PS2 button to number
 //   The resulting enum integer value corresponds to the
@@ -95,7 +95,7 @@ class Cytron_PS2Shield
   
     void begin(uint32_t baudrate = 9600);
     uint8_t readButton(uint8_t key);
-    boolean readAllButton();
+    bool readAllButton();
     void vibrate(uint8_t motor, uint8_t value);
     void reset(uint8_t reset);
     // ---- begin PS2Link functions ----
