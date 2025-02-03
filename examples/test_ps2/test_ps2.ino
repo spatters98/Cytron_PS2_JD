@@ -22,8 +22,12 @@ printDiagnostic(String str0, int value,String str1=""){
 // This permits the variables in the code to have descriptive names and
 // allows easy change of the key bindings
 PS2key gripOn(PS2_TRIANGLE);        
-PS2key gripOff(PS2_SQUARE);           
-PS2key motorSpeed(PS2_JOYSTICK_RIGHT_Y_AXIS);
+PS2key gripOff(PS2_SQUARE); 
+// calling the constructor with the second argument
+// causes the variable to be added to the key list automatically
+PS2key craneUp(PS2_CROSS, ps2);
+PS2key craneDown(PS2_CIRCLE, ps2);          
+PS2key motorSpeed(PS2_JOYSTICK_RIGHT_Y_AXIS, ps2);
 
 void setup() {
   Serial.begin(9600);    // serial interface for console
@@ -32,10 +36,10 @@ void setup() {
   ps2.begin(9600);       // start up shield
   Serial.println("Attached controller");
 
- // create a key list for testing query(PS2key &keyname)
+ // add items to key list that were not automatically
+ // created at the time of declaration
   ps2.pushkey(gripOn);
   ps2.pushkey(gripOff);
-  ps2.pushkey(motorSpeed);
 
   delay(1000);  // short pause before loop starts - not necessary
 }
@@ -45,7 +49,7 @@ void loop() {
     Serial.println("---------------------------");  // mark start of iteration
 
         // legacy access using readButton()
-    printDiagnostic("value of cross button", ps2.readButton(PS2_CROSS));
+    printDiagnostic("value of cross button = ", ps2.readButton(PS2_CROSS));
     
     // direct query to shield using keyname
     int circle;
@@ -61,7 +65,7 @@ void loop() {
     tstart = millis();
     ps2.query();    // this queries all key list entries successively
     period = millis()-tstart;
-    printDiagnostic("query time = ", period, " mS");
+    printDiagnostic("query() time = ", period, " mS");
     printDiagnostic("query gripOn: ", gripOn.value);
     printDiagnostic("gripOn changed? ", gripOn.changed);
     printDiagnostic("query gripOff:", gripOff.value);
@@ -69,19 +73,30 @@ void loop() {
     printDiagnostic("query motorSpeed: ", motorSpeed.value);
     printDiagnostic("motorspeed changed? ", motorSpeed.changed, "\n");
         
-    // query all values and fetch results
+    // query all values at once
     tstart = millis();
     ps2.queryAll();
     period = millis()-tstart;
-    printDiagnostic("query time = ", period, " mS");
+    printDiagnostic("queryAll() time = ", period, " mS");
     
-    // fetch directly with key name 
+    // fetch directly with key name
     int temp;
+    ps2.fetch(PS2_UP, temp);
+    printDiagnostic("value of PS2_UP = ",temp);
+
+    // fetch a key
     ps2.fetch(gripOn);
+    printDiagnostic("single key fetch gripOn = ",gripOn.value);
+    
+    ps2.fetch();  // fetch everything in key list
     printDiagnostic("fetch gripOn: ", gripOn.value);
     printDiagnostic("gripOn changed? ", gripOn.changed);
     printDiagnostic("fetch gripOff:", gripOff.value);
     printDiagnostic("gripOff changed? ", gripOff.changed);
+    printDiagnostic("fetch craneUp: ", craneUp.value);
+    printDiagnostic("craneUP changed? ", craneUp.changed);
+    printDiagnostic("fetch craneDown: ", craneDown.value);
+    printDiagnostic("craneDown changed? ", craneDown.changed);
     printDiagnostic("fetch motorSpeed: ", motorSpeed.value);
     printDiagnostic("motorspeed changed? ", motorSpeed.changed, "\n");
 

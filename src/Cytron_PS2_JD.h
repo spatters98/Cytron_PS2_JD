@@ -59,6 +59,9 @@ enum {
   // Read all button
   PS2_BUTTON_JOYSTICK   //31
 };
+
+class  Cytron_PS2Shield;  // forward declaration
+
 union Packet {                // location for data from readAllButton
   uint64_t value;
   uint8_t byte[8];            // note that the Cytron shield only uses 6 bytes
@@ -68,9 +71,13 @@ union Packet {                // location for data from readAllButton
 class PS2key {
   public:
     PS2key(uint8_t keyname);
-    uint8_t name();
+    PS2key(uint8_t keyname, Cytron_PS2Shield &ps);
+    uint8_t name();   // return the uint8_t key name
     bool changed;     // flag for new value
-    int value;      // variable to carry result     
+    int value;        // variable to carry result  
+    bool clicked();   // returns true and clears changed if key is just changed
+    bool pressed();   // return true if key is presently pressed (zero value)
+    bool released();   // return true and clear changed if key has just been released
   protected:
     uint8_t kname;   // the name of key on controller
 };
@@ -86,7 +93,7 @@ class Cytron_PS2Shield
     // Hardware Serial
     Cytron_PS2Shield();
   
-    void begin(uint32_t baudrate);
+    void begin(uint32_t baudrate = 9600);
     uint8_t readButton(uint8_t key);
     boolean readAllButton();
     void vibrate(uint8_t motor, uint8_t value);
@@ -97,6 +104,7 @@ class Cytron_PS2Shield
     bool query(PS2key &key);    // query a particular key
     bool query();               // query each of the keys in key list
     void pushkey(PS2key &key);  // add a key ptr to the query key list
+    PS2key createKey(uint8_t name); // create a key and push it to keylist
     void clearkeys();           // clear the query list
     bool queryAll();            // query all of the controller with packet response
     void fetch(uint8_t key, int &value); // fetch a key by name

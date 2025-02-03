@@ -2,11 +2,37 @@
 *   Additions to Cytron_PS2Shield     *
 *   to incorporate PS2Link functions  *
 **************************************/
+#define DEBUG
 
 #include "Cytron_PS2_JD.h"
 
-PS2key::PS2key(uint8_t keyname) {kname = keyname;}
+PS2key::PS2key(uint8_t keyname) : kname(keyname){}
+
+PS2key::PS2key(uint8_t keyname, Cytron_PS2Shield &ps) : kname(keyname) {
+    ps.pushkey(*this);
+}
+
 uint8_t PS2key::name() { return kname;}
+
+bool PS2key::clicked() {
+    if(value == 0 && changed) { // key pressed and it is new value
+        changed = false;        // clear the changed flag
+        return true;
+    }
+    else return false;
+}
+
+bool PS2key::released() {
+    if(value == 1 && changed) {
+        changed = false;
+        return true;
+    }
+    else return false;
+}
+
+bool PS2key::pressed() {return (value == 0);}
+
+//******************************
 
 bool Cytron_PS2Shield::checkupdatetime() {
     if((millis() - tlast) < updatems) return false;
@@ -73,7 +99,6 @@ void Cytron_PS2Shield::fetch(uint8_t key, int& value)
 void Cytron_PS2Shield::fetch(PS2key &key)
 {
     int keyval = switchValues[key.name()];
-Serial.print("looking for ");Serial.println(key.name());
     key.changed = keyval != key.value;
     key.value = keyval;
     return;
@@ -92,10 +117,12 @@ void Cytron_PS2Shield::pushkey(PS2key &key) {  // add a key to the query list
       keylist.push_back(&key);
       Serial.print("Pushkey "); Serial.println(key.name());
 }
+
     
 void Cytron_PS2Shield::clearkeys() {
     keylist.clear();
 }
+
     
 /* this one needs some thought
 void Cytron_PS2Shield::pushkey(int name, int &variable) {
