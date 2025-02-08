@@ -1,16 +1,16 @@
-/*
-Original written by:
-            Cytron Technologies
-
-Modified:
-  29/06/15  Idris, Cytron Technologies    - Point to IDE SoftwareSerial
-                                          - Restructure the code style to follow standard Arduino library
-                                          
-Modified:
-  3/02/2025	S. Patterson, UNCC		- correct type error
-									- add code for PostNeoSWSerial library
-									- remove includes not used
-*/
+/**
+ * @file Cytron_PS2_JD.cpp
+ * @brief Modified original Cytron shield code
+ * @author Idris, Cytron Technologies
+ * @author S Patterson, UNCC (modifications only)
+ * @date Feb 2025
+ * @version 0.2
+ * 
+ * Modifications to original code:
+ *   - correct type error
+ *   - add code for PostNeoSWSerial library
+ *   - remove includes not used
+ */
 
 #include "Cytron_PS2_JD.h"
 
