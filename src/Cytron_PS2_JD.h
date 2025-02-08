@@ -104,7 +104,7 @@ class Cytron_PS2Shield
     bool query(PS2key &key);    // query a particular key
     bool query();               // query each of the keys in key list
     void pushkey(PS2key &key);  // add a key ptr to the query key list
-    PS2key createKey(uint8_t name); // create a key and push it to keylist
+    PS2key& createKey(uint8_t name); // create a key and push it to key list
     void clearkeys();           // clear the query list
     bool queryAll();            // query all of the controller with packet response
     void fetch(uint8_t key, int &value); // fetch a key by name
@@ -143,6 +143,7 @@ class Cytron_PS2Shield
       PS2_TRIANGLE,
       PS2_CIRCLE,
       PS2_CROSS,
+      PS2_SQUARE
     };
 };
 

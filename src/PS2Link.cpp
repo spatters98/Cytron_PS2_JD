@@ -112,15 +112,19 @@ void Cytron_PS2Shield::fetch()
     return;
 }
 
+void Cytron_PS2Shield::clearkeys() {
+    keylist.clear();
+}
 
 void Cytron_PS2Shield::pushkey(PS2key &key) {  // add a key to the query list
       keylist.push_back(&key);
       Serial.print("Pushkey "); Serial.println(key.name());
 }
 
-    
-void Cytron_PS2Shield::clearkeys() {
-    keylist.clear();
+PS2key& Cytron_PS2Shield::createKey(uint8_t name)
+{   PS2key* keyptr = new PS2key(name);
+    pushkey(*keyptr);
+    return *keyptr;
 }
 
     
