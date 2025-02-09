@@ -12,11 +12,11 @@ The *readButton(uint8_t keyname)* and *readAllButton()* from the original librar
 
 PS2key objects have the following methods:
 
-    - *name()*      returns the uint8_t key name
-    - *value*       int returned value from the shield
-    - *clicked()*   bool value indicating that the key is newly pressed
-    - *released()*  bool value indicating that the key is newly released
-    - *pressed()*   bool value indicating that the key is currently pressed
+    - _name()_      returns the uint8_t key name
+    - _value_       int returned value from the shield
+    - _clicked()_   bool value indicating that the key is newly pressed
+    - _released()_  bool value indicating that the key is newly released
+    - _pressed()_   bool value indicating that the key is currently pressed
     
 It should be noted that *clicked()* and *released()* return a true value only the **first** time they are called after the action.
 
