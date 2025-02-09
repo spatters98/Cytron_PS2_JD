@@ -12,13 +12,13 @@ The *readButton(uint8_t keyname)* and *readAllButton()* from the original librar
 
 PS2key objects have the following methods:
 
-    - _name()_      returns the uint8_t key name
-    - _value_       int returned value from the shield
-    - _clicked()_   bool value indicating that the key is newly pressed
-    - _released()_  bool value indicating that the key is newly released
-    - _pressed()_   bool value indicating that the key is currently pressed
+    - name()      returns the uint8_t key name
+    - value       int returned value from the shield
+    - clicked()   bool value indicating that the key is newly pressed
+    - released()  bool value indicating that the key is newly released
+    - pressed()   bool value indicating that the key is currently pressed
     
-It should be noted that *clicked()* and *released()* return a true value only the **first** time they are called after the action.
+It should be noted that *clicked()* and *released()* return a true value only the **first** time they are called after the action. In the case of values from the joysticks, *.value* contains the 8-bit value returned and *clicked()* is true if the current value is different than the previous one.
 
 PS2key objects can be updated either by directly querying the shield or by fetching from a buffer that has been previously filled by a *queryAll()* which downloads the data for all keys from the shield into the buffer. *query()* successively queries the shield for each key on the key list. *fetch()* updates all keys on the key list from the buffer. Each individual key query. An individual key query takes ~2mS; querying all of the keys results in a 6-byte transfer and takes ~7-8mS. For most applications it will be easiest to *queryAll()* and then *fetch()* to update the key list.
 
