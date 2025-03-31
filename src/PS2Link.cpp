@@ -154,9 +154,9 @@ bool Cytron_PS2Shield::queryAll()   // get packet from shield
 }
 
 /**
- * @brief Updates a specific key from the buffer on the Arduino
+ * @brief Updates a specific controller key from the buffer on the Arduino
  * 
- * @param key The key to fetch.
+ * @param key The controller key to fetch.
  * @param value Reference to store the key's value.
  */
 void Cytron_PS2Shield::fetch(uint8_t key, int& value)
@@ -190,8 +190,8 @@ void Cytron_PS2Shield::fetch(PS2key &key)
  */
 void Cytron_PS2Shield::fetch()
 {
-    for(auto &key : keylist) {
-        fetch(key);
+    for(auto &keyptr : keylist) {
+        fetch(*keyptr);
     }
     return;
 }

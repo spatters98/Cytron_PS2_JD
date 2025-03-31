@@ -28,6 +28,8 @@ PS2key gripOff(PS2_SQUARE);
 PS2key craneUp(PS2_CROSS, ps2);
 PS2key craneDown(PS2_CIRCLE, ps2);          
 PS2key motorSpeed(PS2_JOYSTICK_RIGHT_Y_AXIS, ps2);
+PS2key up(PS2_UP,ps2);
+PS2key down(PS2_DOWN, ps2);
 
 void setup() {
   Serial.begin(9600);    // serial interface for console
@@ -99,7 +101,8 @@ void loop() {
     printDiagnostic("craneDown changed? ", craneDown.changed);
     printDiagnostic("fetch motorSpeed: ", motorSpeed.value);
     printDiagnostic("motorspeed changed? ", motorSpeed.changed, "\n");
-
+    printDiagnostic("UP",up.value);
+    printDiagnostic("DOWN", down.value);
     Serial.println("**************************");  // done with this iteration of loop
 
    // break out of loop if desired
