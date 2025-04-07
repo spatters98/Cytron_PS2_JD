@@ -3,8 +3,8 @@
  * @brief Header file for PS2key and Cytron_PS2Shield classes
  * @author S Patterson
  * @author Idris, Cytron Technologies
- * @version 0.2
- * @date Feb 2025
+ * @version 0.3
+ * @date April 2025
  * 
  * This is the header file for the PS2key and Cytron_PS2Shield classes.
  * The Cytron_PS2Shield class was originally written by Idris in 2015. 

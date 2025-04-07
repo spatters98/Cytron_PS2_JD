@@ -3,8 +3,8 @@
  * @brief Modified original Cytron shield code
  * @author Idris, Cytron Technologies
  * @author S Patterson, UNCC (modifications only)
- * @date Feb 2025
- * @version 0.2
+ * @date April 2025
+ * @version 0.3
  * 
  * Modifications to original code:
  *   - correct type error
