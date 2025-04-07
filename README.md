@@ -20,8 +20,5 @@ PS2key objects have the following methods:
     
 It should be noted that *clicked()* and *released()* return a true value only the **first** time they are called after the action. In the case of values from the joysticks, *.value* contains the 8-bit value returned and *clicked()* is true if the current value is different than the previous one.
 
----The following *fetch()* discussion does not work reliably ---
-PS2key objects can be updated either by directly querying the shield or by fetching from a buffer that has been previously filled by a *queryAll()* which downloads the data for all keys from the shield into the buffer. *query()* successively queries the shield for each key on the key list. *fetch()* updates all keys on the key list from the buffer. Each individual key query. An individual key query takes ~2mS; querying all of the keys results in a 6-byte transfer and takes ~7-8mS. For most applications it will be easiest to *queryAll()* and then *fetch()* to update the key list.
---------------------------------------------
 
 The original *readButton()* function immediately initiated communication with the shield. If this was repeatedly called in a loop it could result in distracting the CPU sufficiently to cause conflicts with other library functions such as those for servo control. This was often addressed by placing a *delay()* at the end of the loop. But this is bad practice in that it slows down the loop unneccessarily. The *query()* functions have a built in timer that they only query the shield if the previous communication has occured a specified time before. Otherwise it returns and the values in the PS2key object are unchanged. This allows the *query()* functions to be called in the loop safely regardless of the loop timing. 
