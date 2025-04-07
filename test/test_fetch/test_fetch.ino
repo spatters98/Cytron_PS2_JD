@@ -44,9 +44,7 @@ void setup() {
 void loop() {
     Serial.println("---------------------------");  // mark start of iteration
     ps2.queryAll();
-    //ps2.fetch(triangle);
-    //ps2.fetch(square1);
-    //ps2.queryAll();
+    
     ps2.fetch();  // fetch everything in key list
     printDiagnostic("fetch triangle: ", triangle.value);
     printDiagnostic("fetch square: ", square1.value);

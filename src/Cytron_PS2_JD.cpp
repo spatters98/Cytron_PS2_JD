@@ -141,15 +141,27 @@ bool Cytron_PS2Shield::readAllButton()
 		while(PS2Serial->available() < 6)
 		{		
 			waitcount++; 
-			if(waitcount > 50000) {				
+			if(waitcount > 50000) {
+int nbytes = PS2Serial->available();
+Serial.print(nbytes);
+Serial.print(" bytes available at fail\n");
+for(int i=0;i<nbytes;i++) {
+	Serial.print(read());
+	Serial.print("  ");
+}
+Serial.print("\n");
+Serial.println(PS2Serial->available());
 				return (false); 
 			}
 		}
 		
-		
+Serial.println(waitcount);		
 		for(int i = 0; i < 6; i++) {
 			ps_data.byte[i] = read();
+Serial.print(ps_data.byte[i]);
+Serial.print("  ");
 		}
+Serial.print("\n.....\n");
 		return(true);	
 	}
 }

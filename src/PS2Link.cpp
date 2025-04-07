@@ -136,7 +136,8 @@ bool Cytron_PS2Shield::queryAll()   // get packet from shield
 {
     if (!checkupdatetime()) return false;
     else {
-        readAllButton();
+        Serial.println(readAllButton());
+for(int i=0;i<6;i++) Serial.println(ps_data.byte[i]);
         // first get the digital keys
         const uint16_t mask = 1;
         uint16_t tempdata = ps_data.switches[0];
@@ -145,10 +146,10 @@ bool Cytron_PS2Shield::queryAll()   // get packet from shield
             tempdata >>= 1;
         }
         // then get the joystic values
-        switchValues[PS2_JOYSTICK_LEFT_X_AXIS] = ps_data.byte[2];
-        switchValues[PS2_JOYSTICK_LEFT_Y_AXIS] = ps_data.byte[3];
-        switchValues[PS2_JOYSTICK_RIGHT_X_AXIS] = ps_data.byte[4];
-        switchValues[PS2_JOYSTICK_RIGHT_Y_AXIS] = ps_data.byte[5];
+        switchValues[PS2_JOYSTICK_RIGHT_X_AXIS] = ps_data.byte[2];
+        switchValues[PS2_JOYSTICK_RIGHT_Y_AXIS] = ps_data.byte[3];
+        switchValues[PS2_JOYSTICK_LEFT_X_AXIS] = ps_data.byte[4];
+        switchValues[PS2_JOYSTICK_LEFT_Y_AXIS] = ps_data.byte[5];
         return true;
     }
 }
